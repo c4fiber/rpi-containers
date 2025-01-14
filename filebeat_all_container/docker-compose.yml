@@ -1,0 +1,17 @@
+filebeat.inputs:
+  - type: container
+    paths:
+      - /var/lib/docker/containers/*/*.log
+    json.keys_under_root: true
+    json.add_error_key: true
+    fields_under_root: true
+    fields:
+      service: "*"  # 컨테이너 이름 추가
+    processors:
+      - add_docker_metadata: ~
+      - drop_fields:
+          fields: ["host", "input", "agent"]
+
+output.logstash:
+  hosts: ["logstash:5044"]
+
